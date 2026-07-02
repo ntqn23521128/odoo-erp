@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- 1. FORM NHẬP LIỆU: Bổ sung Dải băng cảnh báo đỏ và thông tin AI -->
+        <record id="view_survey_user_input_form_inherit_247" model="ir.ui.view">
+            <field name="name">survey.user_input.form.inherit.247</field>
+            <field name="model">survey.user_input</field>
+            <field name="inherit_id" ref="survey.survey_user_input_view_form"/>
+            <field name="arch" type="xml">
+
+                <!-- Thêm trường Dự án liên quan ngay sau trường Khách hàng -->
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="x_project_id" readonly="1" string="Dự án liên quan"/>
+                </xpath>
+                
+                <xpath expr="//sheet" position="inside">
+                    <!-- Dải băng đỏ chót đập vào mắt nếu có nguy cơ rời bỏ -->
+                    <widget name="web_ribbon" title="NGUY CƠ RỜI BỎ CAO" bg_color="bg-danger" invisible="x_is_churn_risk == False"/>
+                    
+                    <!-- Nhóm mới hiển thị kết quả phân tích AI -->
+                    <group string="Phân tích &amp; Xử lý từ AI">
+                        <group>
+                            <field name="x_ai_sentiment" readonly="1"/>
+                            <field name="x_ai_root_cause" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="x_is_churn_risk" readonly="1"/>
+                            <field name="x_ai_summary" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Thư chăm sóc khách hàng (Đã tự động gửi)">
+                        <field name="x_ai_draft_reply" nolabel="1" readonly="1"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- ================================================================= -->
+        <!-- 2. BIỂU ĐỒ THỐNG KÊ (DASHBOARD)                                   -->
+        <!-- ================================================================= -->
+        
+        <!-- Vẽ Biểu đồ Cột/Tròn phân tích Lỗi và Sắc thái -->
+        <record id="view_survey_user_input_graph_ai" model="ir.ui.view">
+            <field name="name">survey.user_input.graph.ai</field>
+            <field name="model">survey.user_input</field>
+            <field name="arch" type="xml">
+                <graph string="Báo cáo AI Phân tích Lỗi" type="pie">
+                    <field name="x_ai_root_cause" type="row"/>
+                </graph>
+            </field>
+        </record>
+
+        <!-- Vẽ Bảng Pivot phân tích Tỉ lệ Rời bỏ -->
+        <record id="view_survey_user_input_pivot_ai" model="ir.ui.view">
+            <field name="name">survey.user_input.pivot.ai</field>
+            <field name="model">survey.user_input</field>
+            <field name="arch" type="xml">
+                <pivot string="Báo cáo Nguy cơ Rời bỏ (Churn Risk)">
+                    <field name="x_is_churn_risk" type="row"/>
+                    <field name="x_ai_sentiment" type="col"/>
+                </pivot>
+            </field>
+        </record>
+
+        <!-- Tạo Action để mở Báo cáo -->
+        <record id="action_ai_survey_dashboard" model="ir.actions.act_window">
+            <field name="name">Dashboard AI Analytics &amp; Churn Risk</field>
+            <field name="res_model">survey.user_input</field>
+            <field name="view_mode">graph,pivot,list,form</field>
+            <field name="domain">[('x_ai_sentiment', '!=', False)]</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Chưa có dữ liệu phân tích từ AI.
+              </p>
+            </field>
+        </record>
+
+        <!-- Tạo Menu bên thanh Sidebar gắn vào module Khảo sát -->
+        <menuitem id="menu_ai_survey_dashboard"
+                  name="Báo cáo AI Analytics"
+                  parent="survey.menu_surveys"
+                  action="action_ai_survey_dashboard"
+                  sequence="99"/>
+    </data>
+</odoo>
