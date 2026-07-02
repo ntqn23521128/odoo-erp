@@ -44,7 +44,7 @@ class ProjectProject(models.Model):
 
                         # Chui vao mail.mail để gửi email đi
                         self.env['mail.mail'].sudo().create(mail_values).send()
-                        record.message_post(body=f"✅ Module V2 đã gửi Email tự động. Link: <a href='{survey_url}' target='_blank'>Bấm vào đây</a>")
+                        record.message_post(body=f"Module V2 đã gửi Email tự động. Link: <a href='{survey_url}' target='_blank'>Bấm vào đây</a>")
         return res
 
 # =====================================================================
@@ -185,7 +185,7 @@ class SurveyUserInput(models.Model):
                             'body_html': f'<p>{draft_email_text.replace(chr(10), "<br/>")}</p>'
                         }
                         self.env['mail.mail'].sudo().create(mail_values).send()
-                        record.message_post(body="✅ Đã TỰ ĐỘNG GỬI email thư phản hồi cho khách hàng.")
+                        record.message_post(body="Đã TỰ ĐỘNG GỬI email thư phản hồi cho khách hàng.")
                     
                     # Báo động tức thời ve nguy co rời bỏ
                     if churn_alert_flag:
@@ -214,10 +214,10 @@ class SurveyUserInput(models.Model):
                         )
 
                     # Ghi log kết quả phân tích AI vào phần thảo luận của khảo sát
-                    record.message_post(body=f"✅ AI Analysis: {ai_reply}")
+                    record.message_post(body=f"AI Analysis: {ai_reply}")
                 else:
                     # Lấy lý do chính xác từ Google để in ra màn hình
                     err_msg = result.get('error', {}).get('message', str(result))
-                    record.message_post(body=f"⚠️ AI từ chối trả lời. Chi tiết lỗi từ Google: {err_msg}")
+                    record.message_post(body=f"AI từ chối trả lời. Chi tiết lỗi từ Google: {err_msg}")
             except Exception as e:
                 record.message_post(body=f"❌ Không kết nối được AI: {str(e)}")
