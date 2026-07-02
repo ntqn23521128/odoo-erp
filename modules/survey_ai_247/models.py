@@ -200,7 +200,7 @@ class SurveyUserInput(models.Model):
                             if employee.id != 1: 
                                 record.activity_schedule(
                                     'mail.mail_activity_data_todo',
-                                    summary=f'🔥 KHÁCH VIP SẮP RỜI BỎ! (Dự án: {project_name})',
+                                    summary=f'KHÁCH VIP SẮP RỜI BỎ! (Dự án: {project_name})',
                                     note=f"Khách hàng dọa tẩy chay hoặc phàn nàn nhiều lần. TẤT CẢ NHÂN VIÊN LƯU Ý!\n- Lỗi: {root_cause_text}\n- Tóm tắt: {summary_text}",
                                     user_id=employee.id 
                                 )
@@ -208,7 +208,7 @@ class SurveyUserInput(models.Model):
                         project_name = record.x_project_id.name if record.x_project_id else "Không rõ"
                         record.activity_schedule(
                             'mail.mail_activity_data_todo',
-                            summary=f'🚨 Khách phàn nàn (Dự án: {project_name})',
+                            summary=f'Khách phàn nàn (Dự án: {project_name})',
                             note=f"Vấn đề: {summary_text}.",
                             user_id=record.survey_id.user_id.id 
                         )
@@ -220,4 +220,4 @@ class SurveyUserInput(models.Model):
                     err_msg = result.get('error', {}).get('message', str(result))
                     record.message_post(body=f"AI từ chối trả lời. Chi tiết lỗi từ Google: {err_msg}")
             except Exception as e:
-                record.message_post(body=f"❌ Không kết nối được AI: {str(e)}")
+                record.message_post(body=f"Không kết nối được AI: {str(e)}")
